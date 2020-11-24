@@ -1,26 +1,41 @@
-import logo from "./logo.svg";
 import "./App.css";
+import { Datacenter } from "./Datacenter.jsx";
+import { Authorization } from "./Authorization.jsx";
+
+function getTokenFromCookie() {
+  if (
+    !!getCookie("token") &&
+    JSON.parse(getCookie("token")).hasOwnProperty("access_token")
+  ) {
+    return JSON.parse(getCookie("token")).access_token;
+  } else return null;
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" +
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to Zinlab</h1>
-        <form>
-          <p>Username: </p>
-          <input type="text" id="username" name="username"></input>
-          <p>Password: </p>
-          <input type="password" id="password" name="password"></input>
-          <br></br>
-          <br></br>
-
-          <a href="#" class="login-button">
-            Login
-          </a>
-        </form>
-      </header>
-    </div>
-  );
+  if (getTokenFromCookie() != null) {
+    return (
+      <div className="App">
+        <Datacenter />
+      </div>
+    );
+  } else {
+    return (
+      <div className="App">
+        <Authorization />
+      </div>
+    );
+  }
 }
 
 export default App;
